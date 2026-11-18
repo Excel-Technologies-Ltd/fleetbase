@@ -1,346 +1,589 @@
-<div id="hero">
-  <p align="center" dir="auto">
-    <a href="https://fleetbase.io" rel="nofollow">
-      <img src="https://user-images.githubusercontent.com/58805033/191936702-fed04b0f-7966-4041-96d0-95e27bf98248.png" alt="Fleetbase logo" width="500" height="120" style="max-width: 100%;">
-    </a>
-  </p>
-  <p align="center" dir="auto">
-    <a href="https://trendshift.io/repositories/1160?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-1160" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/1160" alt="fleetbase%2Ffleetbase | Trendshift" width="250" height="55"/></a>
-  </p>
-  <p align="center" dir="auto">
-    <a href="https://github.com/fleetbase/fleetbase/blob/main/LICENSE.md"><img src="https://img.shields.io/github/license/fleetbase/fleetbase" alt="License"></a>
-    <a href="https://github.com/fleetbase/fleetbase/releases"><img src="https://img.shields.io/github/v/release/fleetbase/fleetbase" alt="Latest Release"></a>
-    <a href="https://codecov.io/gh/fleetbase/fleetbase"><img src="https://codecov.io/gh/fleetbase/fleetbase/branch/main/graph/badge.svg" alt="Coverage"></a>
-    <a href="https://github.com/fleetbase/fleetbase/stargazers"><img src="https://img.shields.io/github/stars/fleetbase/fleetbase?style=social" alt="GitHub Stars"></a>
-    <a href="https://discord.gg/V7RVWRQ2Wm"><img src="https://img.shields.io/discord/699834923032248430?logo=discord&label=Discord" alt="Discord"></a>
-  </p>
-  <p align="center" dir="auto">
-    <strong>Open-source logistics and supply chain operating system</strong>
-    <br>
-    <a href="https://www.fleetbase.io/docs" rel="nofollow">Documentation</a>
-    ·
-    <a href="https://www.fleetbase.io/docs/api" rel="nofollow">API Reference</a>
-    ·
-    <a href="https://console.fleetbase.io/onboard" rel="nofollow">Try Fleetbase Cloud</a>
-    ·
-    <a href="https://tally.so/r/3NBpAW" rel="nofollow">Book a Demo</a>
-    ·
-    <a href="https://discord.gg/V7RVWRQ2Wm" rel="nofollow">Discord</a>
-  </p>
-  <hr />
-</div>
+# Fleetbase Self-Hosted Install Guide (Docker, LAN Access)
 
-## What is Fleetbase?
+A complete runbook for installing Fleetbase with Docker Compose on an Ubuntu server and accessing it from other machines on your network. It includes the fixes for problems commonly hit during setup (CORS errors, 502 Bad Gateway, crash-looping app container, half-finished database).
 
-Fleetbase is an open-source, modular operating system for logistics and supply chain operations. It covers dispatch, fleet management, live tracking, commerce, warehousing, and finance in one platform, with a REST API, webhooks, and an extension system for everything else. Run it on your own infrastructure or use [Fleetbase Cloud](https://console.fleetbase.io/onboard).
-
-<p align="center" dir="auto">
-  <img src="https://fleetbase.io/images/screenshots/fleet-ops/fleet-ops-order-details-multi-stop.webp" alt="A multi-waypoint order in Fleet-Ops, showing the route on a map beside the order's activity, driver, and vehicle details" width="1200" style="max-width: 100%;" />
-</p>
-
-## Table of Contents
-
-- [Who Uses Fleetbase](#who-uses-fleetbase)
-- [Platform](#platform)
-- [Features](#features)
-- [Screenshots](#screenshots)
-- [Apps](#apps)
-- [Getting Started](#getting-started)
-- [Releases](#releases)
-- [Extensions](#extensions)
-- [Roadmap](#roadmap)
-- [Documentation](#documentation)
-- [Community & Support](#community--support)
-- [Contributing](#contributing)
-- [Creators](#creators)
-- [License](#license)
-
-## Who Uses Fleetbase
-
-Fleetbase is built for teams that move goods, people, or equipment and want to own the software that runs it. Because every workflow, field, and status is configurable, the same platform adapts to very different operations.
-
-| Industry | How Fleetbase is used |
-|----------|-----------------------|
-| [Trucking&nbsp;&&nbsp;Haulage](https://fleetbase.io/solutions/trucking) | Replace a legacy TMS with real-time tracking, route optimization, and digital proof of delivery. |
-| [Courier&nbsp;&&nbsp;Parcel](https://fleetbase.io/solutions/courier-services) | Automate dispatch, raise first-attempt delivery rates, and give customers live parcel tracking. |
-| [Food&nbsp;&&nbsp;Grocery&nbsp;Delivery](https://fleetbase.io/solutions/food-delivery) | Run on-demand delivery with instant dispatch, live customer tracking, and automated notifications. |
-| [E&#8209;commerce&nbsp;&&nbsp;Retail](https://fleetbase.io/solutions/ecommerce) | Power same-day and next-day delivery and returns through a headless API. |
-| [Healthcare&nbsp;&&nbsp;Pharmacy](https://fleetbase.io/solutions/healthcare) | Track chain of custody and prioritize urgent deliveries with full audit trails. |
-| [Waste&nbsp;&&nbsp;Recycling](https://fleetbase.io/solutions/waste-management) | Optimize collection routes, track containers, and produce compliance reports. |
-| [Container&nbsp;Operations](https://fleetbase.io/solutions/container-operations) | Follow containers across multi-modal journeys from port to door. |
-| [Government&nbsp;&&nbsp;Defense](https://fleetbase.io/solutions/government) | Self-host with role-based access, full audit trails, and complete data sovereignty. |
-
-Developers use Fleetbase as a foundation too, building custom logistics products on its API and extension framework.
-
-## Platform
-
-Fleetbase is made up of modules that install into the console as extensions. Each one works on its own and integrates with the rest.
-
-| Module | What it does |
-|--------|--------------|
-| [Fleet&#8209;Ops](https://www.fleetbase.io/docs/fleet-ops) | Fleet management and dispatch: orders, drivers, vehicles, live tracking, route optimization, configurable workflows, and maintenance. |
-| [Storefront](https://www.fleetbase.io/docs/storefront) | Headless commerce for on-demand businesses, with multi-vendor marketplaces and native Fleet-Ops delivery. |
-| [Pallet](https://www.fleetbase.io/docs/pallet) | Warehouse management for inventory, pick lists, cycle counts, and fulfilment. |
-| [Ledger](https://www.fleetbase.io/docs/ledger) | Invoicing, payments, wallets, and accounting for logistics operators. |
-| [Customer&nbsp;Portal](https://github.com/fleetbase/customer-portal) | A self-service workspace for your customers to place and track orders, get quotes and pay, view invoices, manage documents, and open support tickets. |
-| [AI](https://fleetbase.io/platform/ai) | Natural-language order creation, operational queries, and order insights powered by OpenAI or Claude. |
-| [IAM](https://www.fleetbase.io/docs/platform/identity-and-access/users) | Identity and access management: users, groups, roles, policies, and two-factor authentication across your organization. |
-| [Developers](https://www.fleetbase.io/docs/platform/developer-console) | The developer console: API keys, webhooks, socket and system events, and request logs, with separate test and live environments. |
-| [Navigator&nbsp;App](https://github.com/fleetbase/navigator-app) | Open-source driver app for iOS and Android with real-time dispatch, navigation, and proof of delivery. |
-| [Storefront&nbsp;App](https://github.com/fleetbase/storefront-app) | Open-source iOS and Android app for launching your own shop or marketplace. |
-
-## Features
-
-| Feature | Description |
-|---------|-------------|
-| **Extensible** | Install extensions from the marketplace or build your own to add features directly into the OS. |
-| **Developer friendly** | REST API, WebSockets, and webhooks for integrating external systems or building custom apps. |
-| **Configurable workflows** | Define order types with their own activity flows, custom fields, and automation. |
-| **Real-time operations** | Track drivers, vehicles, and orders live, with geofences and service zones. |
-| **Telematics** | Connect GPS devices and sensors for live feedback from the field. |
-| **Identity & access** | Organizations, users, roles, policies, and two-factor authentication. |
-| **Dashboards** | Build custom dashboards and widgets for visibility into operations. |
-| **Collaboration** | Built-in chat, comments, and notifications across your organization. |
-| **Internationalized** | Translate the console into any language. |
-| **Self-hosted or cloud** | Run it on your own infrastructure with full control of your data, or let us host it. |
-
-## Screenshots
-
-<table>
-  <tr>
-    <td width="50%" valign="top">
-      <img src="https://fleetbase.io/images/screenshots/fleet-ops/fleet-ops-orders-board.webp" alt="Fleet-Ops order board" width="100%" />
-      <p align="center"><strong>Order Board</strong><br>Move orders through each stage on a Kanban board.</p>
-    </td>
-    <td width="50%" valign="top">
-      <img src="https://fleetbase.io/images/screenshots/fleet-ops/fleet-ops-orders-map.webp" alt="Fleet-Ops live map with active orders" width="100%" />
-      <p align="center"><strong>Live Operations</strong><br>See active and unassigned orders beside your fleet on a live map.</p>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" valign="top">
-      <img src="https://fleetbase.io/images/screenshots/fleet-ops/fleet-ops-order-config-activity-flow.webp" alt="Fleet-Ops order configuration activity flow editor" width="100%" />
-      <p align="center"><strong>Order Config</strong><br>Design custom activity flows, fields, and entities for each order type.</p>
-    </td>
-    <td width="50%" valign="top">
-      <img src="https://fleetbase.io/images/screenshots/fleet-ops/fleet-ops-orchestrator-run.webp" alt="Fleet-Ops orchestrator workbench" width="100%" />
-      <p align="center"><strong>Orchestrator</strong><br>Allocate vehicles and drivers, assign orders in batches, and plan and schedule routes before committing.</p>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" valign="top">
-      <img src="https://fleetbase.io/images/screenshots/fleet-ops/fleet-ops-geofences-map.webp" alt="Fleet-Ops service areas, zones, and geofence events" width="100%" />
-      <p align="center"><strong>Service Zones & Geofences</strong><br>Define service areas and zones, and watch geofence events as they happen.</p>
-    </td>
-    <td width="50%" valign="top">
-      <img src="https://fleetbase.io/images/screenshots/storefront/storefront-products-list.webp" alt="Storefront product catalog" width="100%" />
-      <p align="center"><strong>Storefront</strong><br>Manage products, catalogs, and orders for your shop or marketplace.</p>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" valign="top">
-      <img src="https://fleetbase.io/images/screenshots/ledger/ledger-dashboard.webp" alt="Ledger financial dashboard" width="100%" />
-      <p align="center"><strong>Ledger</strong><br>Track revenue, invoices, receivables, and wallet balances.</p>
-    </td>
-    <td width="50%" valign="top">
-      <img src="https://fleetbase.io/images/screenshots/extensions/extensions-browse.webp" alt="Extensions marketplace" width="100%" />
-      <p align="center"><strong>Extensions</strong><br>Browse and install free and paid extensions from the marketplace.</p>
-    </td>
-  </tr>
-</table>
-
-## Apps
-
-Fleetbase has two open-source mobile apps, both built with React Native. They connect to Fleetbase Cloud or to your own self-hosted instance, and you can rebrand them and publish them to the App Store and Google Play under your own name.
-
-### Navigator App
-
-<table>
-  <tr>
-    <td width="34%" valign="top">
-      <img src=".github/assets/navigator-v3-today.png" alt="Navigator v3's Today screen: the next stop with a route map, ETA, distance and delivery window, a Navigate button, progress through the day's stops, drive time left, the vehicle's inspection status, and a planned break reminder" width="100%" />
-    </td>
-    <td valign="top">
-
-[Navigator](https://github.com/fleetbase/navigator-app) is the driver app for [Fleet&#8209;Ops](https://www.fleetbase.io/docs/fleet-ops). Drivers receive orders as they're dispatched, follow each order's activity flow step by step, navigate to every stop, and capture proof of delivery with photos, signatures or scans. They also report issues, log fuel and chat with dispatch. Their location streams to the console in real time.
-
-**Navigator v3** is a full redesign, in development in [navigator-app#115](https://github.com/fleetbase/navigator-app/pull/115). The screenshot shows its new Today screen. v3 adds:
-
-- A **Today** view with the next stop, its ETA and delivery window, the day's progress, drive time left and break reminders.
-- A **Route** tab with the day's manifest, and vehicle **inspections** (DVIR) before a shift.
-- An **offline queue**, so steps completed without signal sync once the driver is back online.
-- An **Inbox** for order threads and messages from dispatch.
-- White-label themes, more languages, and in-app connection to self-hosted instances.
-
-[Source code](https://github.com/fleetbase/navigator-app) · [Releases](https://github.com/fleetbase/navigator-app/releases)
-
-</td>
-  </tr>
-</table>
-
-### Storefront App
-
-<table>
-  <tr>
-    <td width="34%" valign="top">
-      <img src="https://fleetbase.io/images/screenshots/storefront-app/ios/storefront-app-network-details.webp" alt="A marketplace home: featured stores, categories and stores near the customer" width="100%" />
-    </td>
-    <td valign="top">
-
-[Storefront](https://github.com/fleetbase/storefront-app) is the customer app for the [Storefront](https://www.fleetbase.io/docs/storefront) extension, for iOS, Android and the web. Launch your own shop or service-booking app, or run a multi-vendor marketplace. Customers browse products, check out with the payment gateway you configure, and follow their order live as Fleet&#8209;Ops delivers it. It runs as a single store, a marketplace of stores, or a food-truck network that shows live trucks on a map.
-
-To publish it without writing code, [Fleetbase AppHelm](https://apphelm.fleetbase.io/storefront?utm_source=github&utm_medium=readme&utm_campaign=launch&utm_content=fleetbase) takes your Fleetbase store and publishes it as your own branded app: free on the web at your own `yourstore.apphelm.io` address, then in the App Store and Google Play, with the builds and submission handled for you.
-
-[Source code](https://github.com/fleetbase/storefront-app) · [Releases](https://github.com/fleetbase/storefront-app/releases) · [Launch your app](https://apphelm.fleetbase.io/storefront?utm_source=github&utm_medium=readme&utm_campaign=launch&utm_content=fleetbase) · [See it in action](https://bayfront-pharmacy.apphelm.io)
-
-</td>
-  </tr>
-</table>
-
-## Getting Started
-
-There are three ways to run Fleetbase:
-
-- **[Fleetbase Cloud](https://www.fleetbase.io/docs/platform/quickstart/cloud-quickstart)**: fully managed, with nothing to install. [Start a free trial](https://console.fleetbase.io/onboard).
-- **[Run locally](https://www.fleetbase.io/docs/platform/quickstart/running-locally)**: self-host with Docker on your own machine or server.
-- **[Deploy in your cloud](https://www.fleetbase.io/docs/platform/quickstart/deploy-in-cloud)**: run production workloads on AWS, GCP, Azure, or any other provider.
-
-### Quickstart
-
-You need Docker with Docker Compose v2, Git, Node.js 18 or newer, and at least 4 GB of RAM allocated to Docker. Then install the Fleetbase CLI and run the interactive installer:
-
-```bash
-npm install -g @fleetbase/cli
-flb install-fleetbase
-```
-
-When setup finishes, open the console at http://localhost:4200 and create your first admin account and organization. The API is served at http://localhost:8000.
-
-The [running locally guide](https://www.fleetbase.io/docs/platform/quickstart/running-locally) also covers installing with Docker Compose or the setup script, configuring services like mail, maps, and SMS, and troubleshooting. To work on Fleetbase itself, follow the [development setup guide](https://www.fleetbase.io/docs/platform/quickstart/development-setup).
-
-## Releases
-
-Every [release](https://github.com/fleetbase/fleetbase/releases) publishes Docker images. It also attaches standalone binaries and a performance report to the release, and refreshes the database diagram in this repository.
-
-### Standalone binaries
-
-Each release attaches a single-file build of the Fleetbase API for Linux and macOS:
-
-| Platform | Download |
-|----------|----------|
-| Linux (x86_64) | [`fleetbase-linux-x86_64`](https://github.com/fleetbase/fleetbase/releases/latest/download/fleetbase-linux-x86_64) |
-| macOS (Apple Silicon) | [`fleetbase-darwin-arm64`](https://github.com/fleetbase/fleetbase/releases/latest/download/fleetbase-darwin-arm64) |
-
-Each binary is a static [FrankenPHP](https://frankenphp.dev/docs/embed/) build. It bundles the API, PHP and every PHP extension Fleetbase needs (including GEOS for geospatial queries), along with the web server. You don't need PHP or Composer on the machine. You still need MySQL and Redis, configured through the API's usual environment variables, and the console is served separately. Docker remains the recommended way to run Fleetbase in production.
-
-```bash
-chmod +x fleetbase-linux-x86_64
-./fleetbase-linux-x86_64 php-cli artisan migrate   # run Artisan commands
-./fleetbase-linux-x86_64 php-server                # serve the API
-```
-
-### Performance report
-
-Each release also attaches a performance report: `performance-report-<version>.html` and `.md`, with the raw numbers in `performance-metrics-<version>.json`. [Open the latest release](https://github.com/fleetbase/fleetbase/releases/latest) to see it.
-
-The report comes from a [k6](https://k6.io) benchmark ([`tests/k6/api-release.js`](tests/k6/api-release.js)) run against a fresh stack booted from source:
-
-- **Throughput.** Ramping load across the public API: orders, places, contacts, drivers, vehicles, fleets and more. It reports average, p50, p90, p95 and p99 latency, requests per second and error rate overall, for reads and writes, and per endpoint. Every figure is compared with the previous release.
-- **Rate-limit isolation.** One API key floods the API far past its limit while a second organization and the console keep working. The second organization and the console must get zero `429` responses.
-
-Release pull requests run the same benchmark as a check. Errors and broken rate-limit isolation always fail it. A latency regression fails it only when it's both large and confirmed by a second run. The benchmark runs on a GitHub-hosted runner, so treat the numbers as a comparison between releases, not a prediction of production throughput.
-
-### Database schema (ERD)
-
-[`erd.svg`](erd.svg) is an entity relationship diagram of the full Fleetbase database: core, Fleet&#8209;Ops, Storefront and the other bundled extensions. A [dark version](erd-dark.svg) is also available. A workflow regenerates both from the migrations on every release branch and opens a pull request with the update, so the diagram always matches the latest release.
-
-## Extensions
-
-Extensions add features, integrate external systems, or change how Fleetbase behaves. Browse and install them from the console or with the [Fleetbase CLI](https://www.fleetbase.io/docs/cli), and publish your own to the marketplace as free or paid extensions.
-
-- [Browse and install extensions](https://www.fleetbase.io/docs/platform/extensions/browsing-and-installing)
-- [Build your first extension](https://www.fleetbase.io/docs/extension-development/getting-started/quickstart)
-- [Extension architecture](https://www.fleetbase.io/docs/extension-development/architecture/overview)
-
-## Roadmap
-
-| Feature | Status | Expected Release | Description |
-|---------|--------|------------------|-------------|
-| **[Navigator App v3](https://github.com/fleetbase/navigator-app/pull/115)** | In development | November 2026 | Redesigned driver app: Today view, route manifest, vehicle inspections, offline queue, and inbox |
-| **[Pallet (WMS)](https://github.com/fleetbase/pallet/pull/9)** | In development | November 2026 | Inventory and warehouse management extension |
-| **[Fleetbase Registry v2](https://github.com/fleetbase/registry/pull/4)** | In development | November 2026 | New extension registry service: one catalog, npm and Composer delivery, licensing, and publisher accounts for cloud and self-hosted instances |
-| **Dynamic Rules** | Planned | 2027 | Rule builder to trigger events, tasks, and jobs |
-
-Want to influence the roadmap? [Join the discussion](https://github.com/orgs/fleetbase/discussions).
-
-## Documentation
-
-- **[Overview](https://www.fleetbase.io/docs/platform/getting-started/overview)** and **[architecture](https://www.fleetbase.io/docs/platform/getting-started/architecture)**: how the platform fits together
-- **[Installation](https://www.fleetbase.io/docs/platform/quickstart/running-locally)**: run Fleetbase locally or [deploy it in the cloud](https://www.fleetbase.io/docs/platform/quickstart/deploy-in-cloud)
-- **[System setup](https://www.fleetbase.io/docs/platform/system-setup/services)**: configure mail, maps, SMS, storage, queues, and sockets
-- **[API reference](https://www.fleetbase.io/docs/api)**: endpoints, authentication, and [API keys](https://www.fleetbase.io/docs/platform/developer-console/api-keys)
-- **[Fleetbase CLI](https://www.fleetbase.io/docs/cli)**: every command for installing, managing, and publishing extensions
-- **[Extension development](https://www.fleetbase.io/docs/extension-development/getting-started/quickstart)**: build and publish your own extensions
-- **[Database schema](erd.svg)**: an entity relationship diagram of the full database, regenerated with each release ([dark version](erd-dark.svg))
-
-## Community & Support
-
-- **Discord**: Chat with maintainers and other users on [Discord](https://discord.gg/V7RVWRQ2Wm).
-- **Discussions**: Ask questions and share ideas in [GitHub Discussions](https://github.com/orgs/fleetbase/discussions).
-- **Bugs**: Search the [issue tracker](https://github.com/fleetbase/fleetbase/issues) first, then [open a new issue](https://github.com/fleetbase/fleetbase/issues/new).
-- **Security**: Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
-- **Support plans**: See [community, cloud, and enterprise support options](https://www.fleetbase.io/docs/community/support-plans).
-- **Releases**: Read changelogs on the [Releases](https://github.com/fleetbase/fleetbase/releases) page and announcements on the [Fleetbase blog](https://www.fleetbase.io/blog).
-- **X**: Follow [@fleetbase_io](https://x.com/fleetbase_io).
-
-## Contributing
-
-We welcome contributions from the community.
-
-- **Report bugs**: [Open an issue](https://github.com/fleetbase/fleetbase/issues/new)
-- **Suggest features**: [Start a discussion](https://github.com/orgs/fleetbase/discussions)
-- **Submit pull requests**: Read the [Contributing Guide](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md)
-- **Translate**: Add or improve a language by following [TRANSLATING.md](TRANSLATING.md)
-- **Write documentation**: Help improve the [docs](https://www.fleetbase.io/docs)
-- **Build extensions**: Create and share [extensions](https://www.fleetbase.io/docs/extension-development/getting-started/quickstart)
-
-To set up a local development environment, see the [development setup guide](https://www.fleetbase.io/docs/platform/quickstart/development-setup).
-
-## Creators
-
-<table style="border: none;">
-  <tr>
-    <td align="center" style="border: none;">
-      <img src="https://user-images.githubusercontent.com/58805033/230263021-212f2553-1269-473d-be94-313cb3eecfa5.png" alt="Ronald A. Richardson" width="120" height="120" style="border-radius: 50%;">
-      <br>
-      <strong>Ronald A. Richardson</strong>
-      <br>
-      Co-founder & CTO
-      <br>
-      <a href="https://github.com/roncodes">GitHub</a> | <a href="https://www.linkedin.com/in/ronald-a-richardson/">LinkedIn</a>
-    </td>
-    <td align="center" style="border: none;">
-      <img src="https://user-images.githubusercontent.com/58805033/230262598-1ce6d0cc-fb65-41f9-8384-5cf5cbf369c7.png" alt="Shiv Thakker" width="120" height="120" style="border-radius: 50%;">
-      <br>
-      <strong>Shiv Thakker</strong>
-      <br>
-      Co-founder & CEO
-      <br>
-      <a href="https://github.com/shivthakker">GitHub</a> | <a href="https://www.linkedin.com/in/shivthakker/">LinkedIn</a>
-    </td>
-  </tr>
-</table>
-
-## License
-
-Fleetbase is dual-licensed. Choose the license that fits how you use it.
-
-**Open source (AGPL-3.0).** Fleetbase is released under the [GNU Affero General Public License v3.0](LICENSE.md). You can use, modify, and self-host it freely, including to run your own commercial operations. If you modify Fleetbase and make it available to others over a network, you must release those modifications under AGPL-3.0.
-
-**Fleetbase Commercial License (FCL).** The commercial license removes the AGPL-3.0 obligations. It lets you keep modifications proprietary, build SaaS products on Fleetbase, and white-label or distribute it under your own brand. It also includes support options and IP indemnification.
-
-Read the [licensing overview](https://fleetbase.io/licensing) to see which license applies to you, or see the [Commercial License](https://fleetbase.io/licensing/commercial) for details. Questions go to [hello@fleetbase.io](mailto:hello@fleetbase.io).
+Replace `192.168.10.195` throughout with your server's IP address. To serve Fleetbase on a public domain behind a reverse proxy with HTTPS (for example Nginx Proxy Manager), follow section 7 after the base install, and section 8 to send real email over SMTP.
 
 ---
 
-**Copyright © 2026 Fleetbase Pte. Ltd.** All rights reserved.
+## 1. Install Docker (fresh Ubuntu 22.04+)
+
+```bash
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+newgrp docker
+docker compose version      # confirm Compose v2 is available
+```
+
+The `usermod` step prevents the `permission denied ... /var/run/docker.sock` error. Log out and back in (or run `newgrp docker`) so it takes effect. After that you do not need `sudo` for Docker commands.
+
+---
+
+## 2. Clone the repository
+
+```bash
+git clone https://github.com/fleetbase/fleetbase.git
+cd fleetbase
+```
+
+---
+
+## 3. Prepare config files BEFORE the first start
+
+### 3.1 Create `api/.env` as a file
+
+Compose bind-mounts `./api/.env`. If that file does not exist when the stack first starts, Docker creates an empty **directory** in its place. Laravel then has no `.env` or `APP_KEY`, the app container crash-loops (`worker script has failed on restart`), nginx returns `502 Bad Gateway`, and the browser reports it as a misleading **CORS error**.
+
+```bash
+cp api/.env.example api/.env 2>/dev/null || touch api/.env
+ls -la api/.env             # must start with "-rw", NOT "drwx"
+```
+
+Make sure it has an `APP_KEY`:
+
+```bash
+grep APP_KEY api/.env
+# If empty, generate one:
+KEY=$(docker compose run --rm --no-deps -T --entrypoint "" application php artisan key:generate --show | tail -n1 | tr -d '\r')
+grep -q '^APP_KEY=' api/.env && sed -i "s|^APP_KEY=.*|APP_KEY=$KEY|" api/.env || echo "APP_KEY=$KEY" >> api/.env
+```
+
+Back up this file. The `APP_KEY` cannot be recovered if lost, and a new key cannot decrypt data encrypted with the old one.
+
+If the repo ships `scripts/docker-install.sh`, you can run it instead. It writes the project `.env` with the socket auth settings the compose file references.
+
+### 3.2 Create `docker-compose.override.yml`
+
+Compose merges this file automatically, and its values take priority over `docker-compose.yml` and `api/.env`.
+
+```yaml
+services:
+  application:
+    environment:
+      APP_URL: "http://192.168.10.195:8000"
+      CONSOLE_HOST: "http://192.168.10.195:4200"
+      SESSION_DOMAIN: "192.168.10.195"
+      FRONTEND_HOSTS: "http://192.168.10.195:4200,192.168.10.195:4200"
+      MAIL_MAILER: "log"          # emails are only written to the log; see section 8 for real SMTP
+
+  socket:
+    environment:
+      SOCKETCLUSTER_OPTIONS: '{"origins":"http://192.168.10.195:*,ws://192.168.10.195:*,http://localhost:*"}'
+```
+
+### 3.3 Edit `console/fleetbase.config.json`
+
+```json
+{
+  "API_HOST": "http://192.168.10.195:8000",
+  "SOCKETCLUSTER_HOST": "192.168.10.195",
+  "SOCKETCLUSTER_PORT": "38000",
+  "SOCKETCLUSTER_SECURE": false
+}
+```
+
+`localhost` in these files refers to the **browser's** machine, not the server. Always use the server's IP or domain. Give the server a static IP or DHCP reservation so it does not change after a reboot.
+
+---
+
+## 4. Start the stack
+
+```bash
+docker compose up -d
+docker compose ps
+```
+
+Wait until `database`, `cache`, `queue` and `application` show as healthy or up.
+
+> **Important rule for the rest of this guide:** whenever the `application` container is recreated (`up -d --force-recreate application`, an image update, or a config change), restart `httpd` right afterwards:
+>
+> ```bash
+> docker compose restart httpd console
+> ```
+>
+> The `httpd` container (nginx) forwards API traffic to the `application` container and keeps its old internal address after a recreate. Until `httpd` is restarted it answers `502 Bad Gateway`, and the browser shows that as a misleading **CORS error**. See section 10.1.
+
+---
+
+## 5. Initialize the database (first time only)
+
+```bash
+docker compose exec application bash -c "./deploy.sh"
+docker compose restart application queue scheduler
+```
+
+`deploy.sh` runs migrations and seeds the data.
+
+### If it fails with `Table 'users' already exists`
+
+A previous install left a half-built database. Check what is there first:
+
+```bash
+docker compose exec database mysql -uroot fleetbase -e "SELECT COUNT(*) AS tables_count FROM information_schema.tables WHERE table_schema='fleetbase';"
+docker compose exec database mysql -uroot fleetbase -e "SELECT COUNT(*) AS users_count FROM users;"
+```
+
+If there is no data you need, back up and reset (this **permanently deletes** the database contents):
+
+```bash
+docker compose exec -T database mysqldump -uroot fleetbase > fleetbase-backup.sql
+docker compose exec database mysql -uroot -e "DROP DATABASE fleetbase; CREATE DATABASE fleetbase CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+docker compose exec application bash -c "./deploy.sh"
+docker compose restart application queue scheduler
+```
+
+If the database holds real data, do not drop it. Inspect `php artisan migrate:status` and reconcile the `migrations` table instead.
+
+---
+
+## 6. Open it
+
+| What | URL |
+|---|---|
+| Console | `http://192.168.10.195:4200` |
+| API | `http://192.168.10.195:8000` |
+| Websocket | `ws://192.168.10.195:38000` |
+
+Verify the API from any machine:
+
+```bash
+curl -i -H "Origin: http://192.168.10.195:4200" http://192.168.10.195:8000/int/v1/onboard/should-onboard
+```
+
+A `200` response with an `Access-Control-Allow-Origin` header means it is working. Open the console and create the admin account on the onboarding screen. Hard-refresh with Ctrl+Shift+R if the page is stale.
+
+Open the ports on the firewall if needed:
+
+```bash
+sudo ufw allow 4200,8000,38000/tcp
+```
+
+---
+
+## 7. Run on a domain with HTTPS (reverse proxy)
+
+Use this when you put Fleetbase behind Nginx Proxy Manager (NPM), Caddy, or another reverse proxy. The examples use `avolytic.com`; replace it with your domain.
+
+### 7.1 Why the LAN config breaks on a domain
+
+If the page is served over HTTPS but the console still calls `http://192.168.10.195:8000`, the browser blocks it as **Mixed Content**. The LAN address is also unreachable from outside your network. The browser then reports a misleading **CORS error**. The fix is to give the console, the API and the websocket each their own public HTTPS address, and point the config at those.
+
+### 7.2 DNS
+
+Create A records pointing at your public IP (or a CNAME to your main host):
+
+| Hostname | Purpose |
+|---|---|
+| `fleetbase.avolytic.com` | Console (web UI) |
+| `fleetbase-api.avolytic.com` | API |
+| `fleetbase-socket.avolytic.com` | Websocket |
+
+Forward ports 80 and 443 on your router to the proxy server.
+
+### 7.3 Proxy hosts (Nginx Proxy Manager)
+
+Create three proxy hosts:
+
+| Domain | Scheme | Forward host | Port | Websockets support |
+|---|---|---|---|---|
+| `fleetbase.avolytic.com` | http | 192.168.10.195 | 4200 | off |
+| `fleetbase-api.avolytic.com` | http | 192.168.10.195 | 8000 | on |
+| `fleetbase-socket.avolytic.com` | http | 192.168.10.195 | 38000 | **on (required)** |
+
+For each host, open the SSL tab, request a Let's Encrypt certificate, and enable **Force SSL**. Leave the Advanced tab empty. Do not add your own CORS headers there, because duplicate headers break the preflight check.
+
+If you use plain Caddy instead of NPM, the equivalent is:
+
+```
+fleetbase.avolytic.com {
+    reverse_proxy 192.168.10.195:4200
+}
+fleetbase-api.avolytic.com {
+    reverse_proxy 192.168.10.195:8000
+}
+fleetbase-socket.avolytic.com {
+    reverse_proxy 192.168.10.195:38000
+}
+```
+
+### 7.4 Console config
+
+Edit `console/fleetbase.config.json`:
+
+```json
+{
+  "API_HOST": "https://fleetbase-api.avolytic.com",
+  "SOCKETCLUSTER_HOST": "fleetbase-socket.avolytic.com",
+  "SOCKETCLUSTER_PORT": "443",
+  "SOCKETCLUSTER_SECURE": true
+}
+```
+
+### 7.5 Override file
+
+Replace the LAN values in `docker-compose.override.yml`:
+
+```yaml
+services:
+  application:
+    environment:
+      APP_URL: "https://fleetbase-api.avolytic.com"
+      CONSOLE_HOST: "https://fleetbase.avolytic.com"
+      SESSION_DOMAIN: ".avolytic.com"
+      FRONTEND_HOSTS: "https://fleetbase.avolytic.com,fleetbase.avolytic.com"
+      MAIL_MAILER: "log"
+
+  socket:
+    environment:
+      SOCKETCLUSTER_OPTIONS: '{"origins":"https://fleetbase.avolytic.com:*,wss://fleetbase.avolytic.com:*"}'
+```
+
+This example still has `MAIL_MAILER: "log"`, so emails are only written to the log. For real email, use the combined override file in section 8.2 instead.
+
+Notes:
+
+- `FRONTEND_HOSTS` entries must match the browser origin exactly: include `https://` and no trailing slash.
+- The console reads a single `API_HOST`, so you cannot use the LAN address and the domain from the same console build at the same time. To keep LAN access too, also add `http://192.168.10.195:4200` to `FRONTEND_HOSTS` and the socket origins, and reach the console through the domain.
+
+### 7.6 Apply
+
+```bash
+docker compose up -d --force-recreate application socket scheduler queue
+docker compose exec application php artisan config:clear
+docker compose exec application php artisan cache:clear
+docker compose restart httpd console      # required, otherwise the API returns 502 (shown as CORS)
+sleep 20
+docker compose ps                         # application should be healthy
+```
+
+### 7.7 Test
+
+```bash
+curl -i -H "Origin: https://fleetbase.avolytic.com" https://fleetbase-api.avolytic.com/int/v1/onboard/should-onboard
+```
+
+You should see `200` and `Access-Control-Allow-Origin: https://fleetbase.avolytic.com`. Then hard-refresh the console with Ctrl+Shift+R. In the browser's Network tab, `should-onboard` should call `https://fleetbase-api.avolytic.com/...`.
+
+If it still calls `192.168.10.195`, open `https://fleetbase.avolytic.com/fleetbase.config.json` in the browser to see which config the console is actually serving.
+
+### 7.8 Domain troubleshooting
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| `Mixed Content` error in the browser console | `API_HOST` still uses `http://` or the LAN IP | Section 7.4, then `docker compose restart console` |
+| CORS error after the Mixed Content fix | Origin not in `FRONTEND_HOSTS` | Match it exactly, including `https://` |
+| `502` from the API hostname | Wrong forward port or scheme in the proxy | Forward to `http` on port 8000 |
+| Duplicate `Access-Control-Allow-Origin` header | CORS headers added in the proxy Advanced tab | Remove them and let the API set CORS |
+| Websocket errors / live tracking missing | Websockets Support off on the socket host, or wrong port | Turn it on, use port 443 with `SOCKETCLUSTER_SECURE: true` |
+| Certificate request fails | DNS not pointing at the proxy, or ports 80/443 not forwarded | Check the A records and router forwarding |
+| Login works but session is lost | `SESSION_DOMAIN` mismatch | Use `.avolytic.com` so API and console share it |
+
+---
+
+## 8. Configure SMTP email
+
+Fleetbase sends invitations, password resets and notifications by email. The override file above sets `MAIL_MAILER: "log"`, which writes emails to the log instead of sending them. To send real mail, switch to SMTP.
+
+### 8.1 Keep the password out of the YAML
+
+Docker Compose automatically reads a file named `.env` in the project folder (next to `docker-compose.yml`) and substitutes `${VARIABLE}` values. Put the credentials there:
+
+```bash
+cd /home/excel/fleetbase
+nano .env
+```
+
+If the file already exists (the install script may have created it with `SOCKETCLUSTER_*` values), append to it:
+
+```
+MAIL_HOST=smtp.example.com
+MAIL_PORT=587
+MAIL_USERNAME=postmaster@example.com
+MAIL_PASSWORD=your-smtp-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@avolytic.com
+```
+
+```bash
+chmod 600 .env
+```
+
+This `.env` is the Compose project file. It is different from `api/.env`, which is the Laravel file inside the container.
+
+### 8.2 Complete `docker-compose.override.yml` (domain + SMTP)
+
+Location: `/home/excel/fleetbase/docker-compose.override.yml`. This replaces the earlier override files. It contains the domain settings from section 7 and the SMTP settings. The `queue` and `scheduler` services need the mail variables too, because emails are sent by the queue worker. The `x-mail-env` block is defined once and reused by all three services.
+
+```yaml
+# Shared SMTP settings, reused by application, queue and scheduler
+x-mail-env: &mail-env
+  MAIL_MAILER: "smtp"
+  MAIL_HOST: "${MAIL_HOST}"
+  MAIL_PORT: "${MAIL_PORT}"
+  MAIL_USERNAME: "${MAIL_USERNAME}"
+  MAIL_PASSWORD: "${MAIL_PASSWORD}"
+  MAIL_ENCRYPTION: "${MAIL_ENCRYPTION}"
+  MAIL_FROM_ADDRESS: "${MAIL_FROM_ADDRESS}"
+  MAIL_FROM_NAME: "Fleetbase"
+
+services:
+  application:
+    environment:
+      <<: *mail-env
+      APP_URL: "https://fleetbase-api.avolytic.com"
+      CONSOLE_HOST: "https://fleetbase.avolytic.com"
+      SESSION_DOMAIN: ".avolytic.com"
+      FRONTEND_HOSTS: "https://fleetbase.avolytic.com,fleetbase.avolytic.com"
+
+  queue:
+    environment:
+      <<: *mail-env
+
+  scheduler:
+    environment:
+      <<: *mail-env
+
+  socket:
+    environment:
+      SOCKETCLUSTER_OPTIONS: '{"origins":"https://fleetbase.avolytic.com:*,wss://fleetbase.avolytic.com:*"}'
+```
+
+If you edit this file and accidentally drop the `APP_URL`, `CONSOLE_HOST`, `SESSION_DOMAIN` or `FRONTEND_HOSTS` lines under `application`, the API stops allowing your console origin and you get a real CORS error. Verify with `docker compose exec application printenv | grep -E "FRONTEND_HOSTS|CONSOLE_HOST|SESSION_DOMAIN|APP_URL"`.
+
+If your SMTP password contains `$`, write it as `$$` in the Compose `.env` file so Compose does not treat it as a variable.
+
+### 8.3 Port and encryption settings
+
+| Port | `MAIL_ENCRYPTION` | Notes |
+|---|---|---|
+| 587 | `tls` | STARTTLS. The usual choice |
+| 465 | `ssl` | Implicit TLS. Do not combine port 465 with `tls` |
+| 25 | empty | Unencrypted. Often blocked by ISPs and cloud hosts |
+
+Provider notes:
+
+- **Gmail / Google Workspace:** host `smtp.gmail.com`, port 587, and an **App Password** (needs 2-step verification on). Your normal password will not work.
+- **Microsoft 365:** host `smtp.office365.com`, port 587. SMTP AUTH must be enabled for the mailbox.
+- **ZeptoMail (Zoho):** host `smtp.zeptomail.com`, port 587 with `tls` (or 465 with `ssl`). The username is normally `emailapikey` and the password is the Send Mail token. `MAIL_FROM_ADDRESS` must be on a domain you have verified in ZeptoMail.
+- **Transactional services** (Mailgun, SendGrid, Brevo, Amazon SES): use their SMTP host and credentials. These usually deliver better than a personal mailbox.
+- `MAIL_FROM_ADDRESS` should be an address your SMTP provider allows you to send as, otherwise the message is rejected or lands in spam.
+
+### 8.4 Apply
+
+```bash
+docker compose config | grep -E "MAIL_(MAILER|HOST|PORT|ENCRYPTION|FROM)"   # confirm values merged
+docker compose up -d --force-recreate application queue scheduler
+docker compose exec application php artisan config:clear
+docker compose exec application php artisan cache:clear
+docker compose restart httpd console queue   # httpd restart is required after recreating application
+sleep 20
+docker compose ps                            # application should be healthy
+```
+
+### 8.5 Send a test email
+
+```bash
+docker compose exec application php artisan tinker --execute='Mail::raw("Fleetbase SMTP test", fn($m) => $m->to("you@example.com")->subject("Fleetbase SMTP test"));'
+```
+
+If it prints nothing and the email arrives, SMTP works. Any connection or authentication error is printed straight to the terminal. You can also confirm the active mailer with:
+
+```bash
+docker compose exec application php artisan about | grep -i mail
+```
+
+It should say `smtp`. A value of `log` or `ses` means the override has not been applied.
+
+### 8.6 SMTP troubleshooting
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| `about` still shows `log` or `ses` | Override not applied, or `MAIL_MAILER` set elsewhere | Check `docker compose config`, recreate containers, clear config |
+| `Connection could not be established` / timeout | Wrong host or port, or outbound SMTP blocked by firewall or ISP | Test with `nc -vz smtp.example.com 587`. Try 587 instead of 25 |
+| `Authentication failed` / `535` | Wrong credentials, or a normal password used where an app password is required | Use an app password or a dedicated SMTP user |
+| `certificate verify failed` | Wrong `MAIL_ENCRYPTION` for the port | 587 uses `tls`, 465 uses `ssl` |
+| Test works but app emails never arrive | The `queue` container lacks the SMTP variables or was not restarted | Add them to `queue` (8.2) and run `docker compose restart queue` |
+| Emails arrive in spam | Sender domain has no SPF, DKIM or DMARC | Add the DNS records your SMTP provider gives you |
+| Failed jobs after a mail error | Queue retries | `docker compose exec application php artisan queue:failed`, fix the config, then `php artisan queue:retry all` |
+
+Some Fleetbase versions also let admins edit mail settings in the console under the admin settings area. Values in the container environment take priority, so if you use that screen, remove the `MAIL_*` lines from the override.
+
+### 8.7 Complete file reference (domain + SMTP)
+
+All the files for a domain setup with SMTP, in one place. Replace `avolytic.com`, the IP and the SMTP values with your own.
+
+**1. `docker-compose.override.yml`**: see section 8.2.
+
+**2. `.env`** (Compose project file, `/home/excel/fleetbase/.env`):
+
+```env
+# --- SMTP ---
+MAIL_HOST=smtp.example.com
+MAIL_PORT=587
+MAIL_USERNAME=postmaster@example.com
+MAIL_PASSWORD=your-smtp-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@avolytic.com
+
+# --- Socket (keep existing values if scripts/docker-install.sh already created them) ---
+SOCKETCLUSTER_AUTH_ENABLED=false
+SOCKETCLUSTER_AUTH_KEY=
+SOCKETCLUSTER_AUTH_MODE=
+SOCKETCLUSTER_ORIGIN=https://fleetbase.avolytic.com
+```
+
+```bash
+chmod 600 .env
+```
+
+**3. `console/fleetbase.config.json`:**
+
+```json
+{
+  "API_HOST": "https://fleetbase-api.avolytic.com",
+  "SOCKETCLUSTER_HOST": "fleetbase-socket.avolytic.com",
+  "SOCKETCLUSTER_PORT": "443",
+  "SOCKETCLUSTER_SECURE": true
+}
+```
+
+**4. `api/.env`** (Laravel file mounted into the container; must be a file, not a directory):
+
+```env
+APP_KEY=base64:PASTE_YOUR_EXISTING_KEY_HERE
+```
+
+Keep the `APP_KEY` you already have. Everything else comes from the override and compose file, which take priority over this file.
+
+**5. Nginx Proxy Manager hosts:** see section 7.3.
+
+**Apply everything:**
+
+```bash
+cd /home/excel/fleetbase
+docker compose config | grep -E "MAIL_(MAILER|HOST|PORT|ENCRYPTION|FROM_ADDRESS)|FRONTEND_HOSTS|CONSOLE_HOST"
+docker compose up -d --force-recreate application queue scheduler socket
+docker compose exec application php artisan config:clear
+docker compose exec application php artisan cache:clear
+docker compose restart httpd console queue
+sleep 20
+docker compose ps
+curl -i -H "Origin: https://fleetbase.avolytic.com" https://fleetbase-api.avolytic.com/int/v1/onboard/should-onboard
+```
+
+---
+
+## 9. Day-to-day operations
+
+```bash
+docker compose ps                                   # status
+docker compose logs -f --tail=100 application       # follow logs
+docker compose restart <service>                    # restart one service
+docker compose down                                 # stop (data kept in docker/database/mysql)
+docker compose up -d                                # start
+```
+
+### Apply override or config changes
+
+```bash
+docker compose up -d --force-recreate application queue scheduler socket
+docker compose exec application php artisan config:clear
+docker compose exec application php artisan cache:clear
+docker compose restart httpd console queue   # always restart httpd after recreating application
+```
+
+### Update
+
+```bash
+git pull
+docker compose pull
+docker compose up -d
+docker compose restart httpd console
+docker compose exec application ./deploy.sh        # run new migrations
+```
+
+### Backup
+
+```bash
+docker compose exec -T database mysqldump -uroot fleetbase > fleetbase-$(date +%F).sql
+```
+
+Also back up `api/.env` and `api/storage/app`.
+
+---
+
+## 10. Troubleshooting
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Browser "CORS error" on `should-onboard` | Usually the API returns 502, or the origin is not allowed | Follow section 10.1 |
+| CORS error right after recreating `application` | `httpd` still points at the old container | `docker compose restart httpd console` |
+| `502 Bad Gateway` from `:8000` | Application container crash-looping | `docker compose ps`, then check `api/.env` |
+| `worker script has failed on restart` loop | `api/.env` missing, is a directory, or has no `APP_KEY` | Section 3.1 |
+| `permission denied ... docker.sock` | User not in the docker group | `sudo usermod -aG docker $USER`, then re-login |
+| "Fleetbase is not installed or configured" | Migrations or seed did not complete | Section 5 |
+| `Table 'users' already exists` | Half-finished earlier install | Reset the DB (section 5) |
+| Override changes not applied | Containers not recreated | Section 9, apply changes |
+| `scheduler` shows unhealthy | Same cause as the app crash | Fix the app first, then it recovers |
+| Console loads but calls `localhost` | `API_HOST` wrong in `fleetbase.config.json` | Section 3.3, then `docker compose restart console` |
+| Mixed Content or CORS error on a domain | Console still points at the LAN IP | Section 7 |
+| Invitation or reset emails never arrive | Mailer is still `log`, or SMTP not set on `queue` | Section 8 |
+
+### 10.1 CORS error: step-by-step fix
+
+The browser prints "blocked by CORS policy" for several unrelated problems. Work through these in order.
+
+**Step 1. Restart `httpd` and `console`.** This is the most common cause after you recreate `application` (for example after editing the override or SMTP settings):
+
+```bash
+cd /home/excel/fleetbase
+docker compose restart httpd console
+sleep 20
+docker compose ps
+```
+
+`application` should show `healthy`. It takes 15 to 30 seconds after a recreate.
+
+**Step 2. Test the API directly:**
+
+```bash
+curl -i -H "Origin: https://fleetbase.avolytic.com" https://fleetbase-api.avolytic.com/int/v1/onboard/should-onboard
+```
+
+| Result | Meaning | Fix |
+|---|---|---|
+| `200` and `Access-Control-Allow-Origin: https://fleetbase.avolytic.com` | API is fine | Hard-refresh the browser with Ctrl+Shift+R. Check the Network tab to make sure the console calls the API hostname |
+| `502 Bad Gateway` | `httpd` cannot reach the app, or the app is crash-looping | Repeat step 1. If it persists: `docker compose logs --tail=40 application \| grep -v "worker script"`, and check `api/.env` is a file with an `APP_KEY` |
+| `200` but no `Access-Control-Allow-Origin` header | Origin not allowed, or the override lost its settings | Step 3 |
+| Cannot connect / certificate error | DNS, proxy host or certificate problem | Check the Nginx Proxy Manager host and SSL settings |
+
+**Step 3. Check the origin settings the container actually sees:**
+
+```bash
+docker compose exec application printenv | grep -E "FRONTEND_HOSTS|CONSOLE_HOST|SESSION_DOMAIN|APP_URL"
+```
+
+They must show the `https://fleetbase...` values from section 8.2. If they are missing, the `application` block of your override lost them. Restore them, then recreate `application`, clear the config cache and restart `httpd` (section 8.4). The `FRONTEND_HOSTS` entry must match the browser origin exactly: `https://` included, no trailing slash.
+
+**Step 4. Check the console config.** Open `https://fleetbase.avolytic.com/fleetbase.config.json` in the browser. `API_HOST` must be `https://fleetbase-api.avolytic.com`. If it shows `http://` or the LAN IP, you get a Mixed Content error followed by a CORS error. Fix `console/fleetbase.config.json` and run `docker compose restart console`.
+
+**Step 5. Remove duplicate CORS headers.** If the proxy's Advanced tab contains `add_header Access-Control-Allow-Origin` lines, delete them. The API sets CORS itself, and two headers make the browser reject the response.
+
+Useful diagnostics:
+
+```bash
+df -h                                               # a full disk breaks MySQL and the app
+docker compose exec application printenv | grep -E "FRONTEND_HOSTS|CONSOLE_HOST|SESSION_DOMAIN"
+docker compose run --rm --no-deps --entrypoint "" application php artisan about
+```
+
+---
+
+## 11. Security notes
+
+- The default compose file sets `MYSQL_ALLOW_EMPTY_PASSWORD: "yes"` and publishes MySQL on port 3306. This is acceptable on an isolated test machine only. For anything shared, remove the `3306:3306` port mapping and set a real password.
+- Use a dedicated SMTP user or app password, and keep it in the Compose `.env` file (`chmod 600`), not in the YAML.
+- For production, serve over HTTPS with a domain (section 7) and set `SOCKETCLUSTER_AUTH_ENABLED=true` with a secret key.
+- The compose file disables MySQL binary logging (`--skip-log-bin`) because telematics ingest made it grow past 300 GB. Do not enable replication or point-in-time recovery without turning it back on.
+- When exposing Fleetbase publicly, do not forward ports 3306 (MySQL), 4200, 8000 or 38000 on the router. Only expose 80 and 443 on the proxy.
+- Keep `api/.env` out of version control and restrict its permissions.
